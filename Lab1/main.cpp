@@ -21,7 +21,7 @@ void retime (int graph[N][N], int c, int dU[N]);
 class Matrix {
     public:
     int a[N][N] = {0};
-    void sp();
+    bool sp();
     void set_values(int ro[N][N]);
     void print_matrix();
 };
@@ -42,7 +42,7 @@ void Matrix::set_values(int ro[N][N]){
 // sp: shortest path method uses Floyd-Warshall algorithm to find the shortest
 // path in a matrix describing a graph.
 ////////////////////////////////////////////////////////////////////////////////////
-void Matrix::sp(){
+bool Matrix::sp(){
 
     int dp[N+1][N][N] = {0};
 
@@ -67,12 +67,22 @@ void Matrix::sp(){
         }
     } 
 
+    for (int k = 0; k < N; k++){
+        for (int u = 0; u < N; u++){
+            if (dp[k][u][u] < 0){
+                return false;
+            }
+        }
+    }
+
 // return the found shortest path values back to the matrix
     for (int v = 0; v < N; v++){
         for (int u = 0; u < N; u++){
             a[u][v] = dp[N][u][v];  // shortest path values are found in the last matrix N
         }
     }
+
+    return true;
 };
 
 void Matrix::print_matrix(){
@@ -95,18 +105,18 @@ void Matrix::print_matrix(){
 int main() {
 
 /* representation of the graph that we want to test */
-   // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-    //                     /*1*/    {inf, inf,   1,   2},
-    //                     /*2*/    {  1, inf, inf, inf},
-    //                     /*3*/    {inf,   0, inf, inf},
-    //                     /*4*/    {inf,   0, inf, inf}};
     int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-                         /*1*/    {inf, 1,   inf,   2},
-                         /*2*/    {inf, inf,   0, inf},
-                         /*3*/    {  0,   inf, inf, inf},
-                         /*4*/    {inf,   3, inf, inf}};
+                         /*1*/    {inf, inf,   1,   2},
+                         /*2*/    {  1, inf, inf, inf},
+                         /*3*/    {inf,   0, inf, inf},
+                         /*4*/    {inf,   0, inf, inf}};
+   // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+  //                       /*1*/    {inf, 1,   inf,   2},
+  //                       /*2*/    {inf, inf,   0, inf},
+  //                       /*3*/    {  0,   inf, inf, inf},
+  //                       /*4*/    {inf,   3, inf, inf}};
     int c = 3; // wanted retiming value
-    int tp[N] = {1,1,1,2};
+    int tp[N] = {1,1,2,2};
     retime(init_graph, c, tp);    
     return 0;
 }
@@ -126,7 +136,7 @@ void retime (int graph[N][N], int c, int dU[N]){
     Matrix D;
     Matrix INQ;
 
-             // propagation delays of each circuit 
+    cout << "\n *** c is = " << c << " *** \n";    
 
     G.set_values(graph); // set matrix G to graph
     Gp = G;
@@ -149,8 +159,14 @@ void retime (int graph[N][N], int c, int dU[N]){
     Gp.print_matrix();
 
 /*Finding Shortest Path Suv*/
-    Gp.sp(); // this G becomes "Suv"
+//    Gp.sp(); // this G becomes "Suv"
 
+if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE ARE ISSUES */
+        cout << "Suv expression is TRUE, continue.. \n";
+    } else {
+        cout << "Suv expression is FALSE, ending program.  c = " << c << "\n";
+        return;
+    }
     cout << "Graph Suv = " << "\n";
     Gp.print_matrix();
 
@@ -205,24 +221,45 @@ void retime (int graph[N][N], int c, int dU[N]){
     
 
 /* Reuse SP algorithm to find SP for inequalities */
-    INQ.sp();
-
-    cout << "Graph calculated Inequalities= " << "\n";
+    if (INQ.sp()) {
+        cout << "Inequality expression is TRUE, continue.. \n";
+    } else {
+        cout << "Inequality expression is FALSE, ending program.  c = " << c << "\n";
+        return;
+    }
+    cout << "Graph calculated Inequalities = " << "\n";
     INQ.print_matrix();
+
+    int column_ptr = 0;
+    int smallest = 0;
+
+    for (int v = 0; v < N; v++){
+        int cur = 0;
+        for (int u = 0; u < N; u++){
+            cur += INQ.a[u][v];
+        }
+
+        if (cur < smallest) {
+            smallest = cur;
+            column_ptr = v;
+        }
+    }
+
+
 
     int c_tmp = 0;
         for(int i = 0; i < N; i++){
             cout << "R" << i+1 << "(" << INQ.a[i][1] << "), ";
 
-        c_tmp += INQ.a[i][1];
+        c_tmp += INQ.a[i][column_ptr];
 
     }
 
-    cout << "CYCLE IS EQUAL TO: " << c_tmp << "\n" << endl;
-    if (c_tmp >= 0){
-       // if (c >= -3){
-        retime(graph, c-1, dU); // recursive call to retime function
-    }
+
+    if (c >= 1){
+        retime(graph, c-1, dU);
+        }
+
 
     // Not sure if this is the correct "negative cycle" setup
 
