@@ -12,7 +12,7 @@ int inf = 9999;
 
 
 int FW(int dist[N][N]);
-void retime (int graph[N][N], int c);
+void retime (int graph[N][N], int c, int dU[N]);
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,13 @@ void Matrix::sp(){
 
 void Matrix::print_matrix(){
 
+        for (int v = 0; v < N; v++){
+            cout << v+1 << "| ";
+            for (int u = 0; u < N; u++){
+                cout << a[v][u] << "  "; 
+            }
+            cout << " \n";
+        }
 
     return;
 }
@@ -88,15 +95,19 @@ void Matrix::print_matrix(){
 int main() {
 
 /* representation of the graph that we want to test */
-    int init_graph[N][N] ={ 
-                         /*1*/   {inf, inf,   1,   2},
-                         /*2*/    {  1, inf, inf, inf},
-                         /*3*/    {inf,   0, inf, inf},
-                         /*4*/    {inf,   0, inf, inf}
-                            };
+   // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+    //                     /*1*/    {inf, inf,   1,   2},
+    //                     /*2*/    {  1, inf, inf, inf},
+    //                     /*3*/    {inf,   0, inf, inf},
+    //                     /*4*/    {inf,   0, inf, inf}};
+    int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+                         /*1*/    {inf, 1,   inf,   2},
+                         /*2*/    {inf, inf,   0, inf},
+                         /*3*/    {  0,   inf, inf, inf},
+                         /*4*/    {inf,   3, inf, inf}};
     int c = 3; // wanted retiming value
-
-    retime(init_graph, c);    
+    int tp[N] = {1,1,1,2};
+    retime(init_graph, c, tp);    
     return 0;
 }
 
@@ -106,7 +117,7 @@ int main() {
 // prints out retimed constraints.  Runs recursively until lowest time is achieved
 ////////////////////////////////////////////////////////////////////////////////////
 
-void retime (int graph[N][N], int c){
+void retime (int graph[N][N], int c, int dU[N]){
 
 /* declare matrices used in program */
     Matrix G;
@@ -115,24 +126,33 @@ void retime (int graph[N][N], int c){
     Matrix D;
     Matrix INQ;
 
-    int dU[N] = {1,1,2,2};  // propagation delays of each circuit 
+             // propagation delays of each circuit 
 
     G.set_values(graph); // set matrix G to graph
     Gp = G;
 
+    cout << "Graph G = " << "\n";
+    G.print_matrix();
+
     for (int i = 0; i < N ; i++){
-        cout << i + 1 << "  |";
+        // cout << i + 1 << "| ";
         for (int j = 0; j < N; j++){
             if ((G.a[i][j] < inf) && (i != j)){
                 Gp.a[i][j] = N * DMAX * G.a[i][j] - dU[i];
             };
-            cout << Gp.a[i][j] << "   "; 
+            //cout << Gp.a[i][j] << "   "; 
         };
-        cout << "\n";
+       // cout << "\n";
     };
+
+    cout << "Graph G' = " << "\n";
+    Gp.print_matrix();
 
 /*Finding Shortest Path Suv*/
     Gp.sp(); // this G becomes "Suv"
+
+    cout << "Graph Suv = " << "\n";
+    Gp.print_matrix();
 
 /* Finding W(U,V) */
     int w[N][N] = {0};
@@ -144,6 +164,9 @@ void retime (int graph[N][N], int c){
             }
         }
     W.set_values(w);
+
+    cout << "Graph W = " << "\n";
+    W.print_matrix();
 
 /* Finding D(U,V) */
     int d[N][N] = {0};
@@ -159,6 +182,10 @@ void retime (int graph[N][N], int c){
     }    
     D.set_values(d);
 
+    cout << "Graph D = " << "\n";
+    D.print_matrix();
+
+
 /* finding inequalities */
     int inq[N][N];
 
@@ -173,8 +200,15 @@ void retime (int graph[N][N], int c){
     }
     INQ.set_values(inq);
 
+    cout << "Graph Inequalities = " << "\n";
+    INQ.print_matrix();
+    
+
 /* Reuse SP algorithm to find SP for inequalities */
     INQ.sp();
+
+    cout << "Graph calculated Inequalities= " << "\n";
+    INQ.print_matrix();
 
     int c_tmp = 0;
         for(int i = 0; i < N; i++){
@@ -184,10 +218,10 @@ void retime (int graph[N][N], int c){
 
     }
 
-    cout << "CYCLE IS EQUAL TO: " << c_tmp << "\n";
+    cout << "CYCLE IS EQUAL TO: " << c_tmp << "\n" << endl;
     if (c_tmp >= 0){
        // if (c >= -3){
-        retime(graph, c-1); // recursive call to retime function
+        retime(graph, c-1, dU); // recursive call to retime function
     }
 
     // Not sure if this is the correct "negative cycle" setup
