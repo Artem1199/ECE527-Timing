@@ -105,18 +105,18 @@ void Matrix::print_matrix(){
 int main() {
 
 /* representation of the graph that we want to test */
-    int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-                         /*1*/    {inf, inf,   1,   2},
-                         /*2*/    {  1, inf, inf, inf},
-                         /*3*/    {inf,   0, inf, inf},
-                         /*4*/    {inf,   0, inf, inf}};
-   // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-  //                       /*1*/    {inf, 1,   inf,   2},
-  //                       /*2*/    {inf, inf,   0, inf},
-  //                       /*3*/    {  0,   inf, inf, inf},
-  //                       /*4*/    {inf,   3, inf, inf}};
+    // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+    //                      /*1*/    {inf, inf,   1,   2},
+    //                      /*2*/    {  1, inf, inf, inf},
+    //                      /*3*/    {inf,   0, inf, inf},
+    //                      /*4*/    {inf,   0, inf, inf}};
+   int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+                        /*1*/    {inf, 2,   inf,   inf},
+                        /*2*/    {inf, inf,   3, 0},
+                        /*3*/    {  1,   inf, inf, inf},
+                        /*4*/    {inf,   1, 0, inf}};
     int c = 3; // wanted retiming value
-    int tp[N] = {1,1,2,2};
+    int tp[N] = {2,1,2,2};
     retime(init_graph, c, tp);    
     return 0;
 }
@@ -164,7 +164,7 @@ void retime (int graph[N][N], int c, int dU[N]){
 if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE ARE ISSUES */
         cout << "Suv expression is TRUE, continue.. \n";
     } else {
-        cout << "Suv expression is FALSE, ending program.  c = " << c << "\n";
+        cout << "Suv expression is FALSE, ending program.  Failed c = " << c << "\n";
         return;
     }
     cout << "Graph Suv = " << "\n";
@@ -224,7 +224,7 @@ if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE 
     if (INQ.sp()) {
         cout << "Inequality expression is TRUE, continue.. \n";
     } else {
-        cout << "Inequality expression is FALSE, ending program.  c = " << c << "\n";
+        cout << "Inequality expression is FALSE, ending program. Failed c = " << c << "\n";
         return;
     }
     cout << "Graph calculated Inequalities = " << "\n";
