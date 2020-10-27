@@ -110,13 +110,15 @@ int main() {
     //                      /*2*/    {  1, inf, inf, inf},
     //                      /*3*/    {inf,   0, inf, inf},
     //                      /*4*/    {inf,   0, inf, inf}};
-   int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+  int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
                         /*1*/    {inf, 2,   inf,   inf},
                         /*2*/    {inf, inf,   3, 0},
                         /*3*/    {  1,   inf, inf, inf},
                         /*4*/    {inf,   1, 0, inf}};
     int c = 3; // wanted retiming value
     int tp[N] = {2,1,2,2};
+    
+    // int tp[N] = {1,1,2,2};
     retime(init_graph, c, tp);    
     return 0;
 }
@@ -132,6 +134,7 @@ void retime (int graph[N][N], int c, int dU[N]){
 /* declare matrices used in program */
     Matrix G;
     Matrix Gp;
+    Matrix Gr;
     Matrix W;
     Matrix D;
     Matrix INQ;
@@ -227,7 +230,7 @@ if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE 
         cout << "Inequality expression is FALSE, ending program. Failed c = " << c << "\n";
         return;
     }
-    cout << "Graph calculated Inequalities = " << "\n";
+    cout << "Graph calculated Inequalities after SP() = " << "\n";
     INQ.print_matrix();
 
     int column_ptr = 0;
@@ -249,11 +252,40 @@ if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE 
 
     int c_tmp = 0;
         for(int i = 0; i < N; i++){
-            cout << "R" << i+1 << "(" << INQ.a[i][1] << "), ";
+            cout << "R" << i+1 << "(" << INQ.a[i][column_ptr] << "), ";
+            cout << "\n";
+        }
 
-        c_tmp += INQ.a[i][column_ptr];
+    Gr.set_values(G.a);
 
-    }
+    for (int v = 0; v < N; v++){
+        for (int u = 0; u < N; u++){
+            if (G.a[u][v] < inf ) {
+              for (int i = 0; i < N; i++){
+                  if (i == u) {
+                      Gr.a[u][v] -= INQ.a[i][column_ptr];  // you're replacing your value each time :()
+                  } else if (i == v) {
+                      Gr.a[u][v] += INQ.a[i][column_ptr];
+                  }
+              }
+            } else
+            {
+                Gr.a[u][v] = inf;
+            }
+            
+        }
+    }        
+
+
+    cout << "Retimed Graph, Gr: \n";
+      //  Gr.set_values(gr);
+        Gr.print_matrix();
+
+       // c_tmp += INQ.a[i][column_ptr];
+
+    
+
+
 
 
     if (c >= 1){
