@@ -4,11 +4,11 @@ using namespace std;
 
 
 #define DMAX 2
-#define N 4
+#define N 3
 
 // number to represent infinity
 // Need to replace with a better rep. in the future
-int inf = 9999;
+int inf = 99;
 
 
 int FW(int dist[N][N]);
@@ -59,7 +59,7 @@ bool Matrix::sp(){
             for (int u = 0; u < N; u++){
                 dp[k+1][u][v] = dp[k][u][v];
                     if (dp[k+1][u][v] > (dp[k][u][k]+dp[k][k][v]) 
-                        && !(dp[k][u][k]+dp[k][k][v]+dp[k+1][u][v] > 19000)){ // 2nd condition to verify that inf > inf is false, to avoid the instance where (inf > inf - 2) would be true
+                        && !(dp[k][u][k]+dp[k][k][v]+dp[k+1][u][v] > (inf*2 - 5))){ // 2nd condition to verify that inf > inf is false, to avoid the instance where (inf > inf - 2) would be true
                                                                                 // if two of these added is greater than 19000, then we must have 2 inf, and inf > inf is false
                         dp[k+1][u][v] = dp[k][u][k] + dp[k][k][v];
                 }
@@ -104,21 +104,48 @@ void Matrix::print_matrix(){
 
 int main() {
 
-/* representation of the graph that we want to test */
-    // int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-    //                      /*1*/    {inf, inf,   1,   2},
-    //                      /*2*/    {  1, inf, inf, inf},
-    //                      /*3*/    {inf,   0, inf, inf},
-    //                      /*4*/    {inf,   0, inf, inf}};
-  int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
-                        /*1*/    {inf, 2,   inf,   inf},
-                        /*2*/    {inf, inf,   3, 0},
-                        /*3*/    {  1,   inf, inf, inf},
-                        /*4*/    {inf,   1, 0, inf}};
-    int c = 3; // wanted retiming value
-    int tp[N] = {2,1,2,2};
+// /* representation of the graph that we want to test */
+//      int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+//                           /*1*/    {inf, 1,   inf,   2},
+//                          /*2*/     { inf, inf, 0, inf},
+//                           /*3*/    {1, inf, inf, inf},
+//                           /*4*/    {inf,   inf, 0, inf}};
+
+//      int tp[N] = {1,2,1,2}; // UPDATE DMAX IF YOU UPDATE THIS
+
+
+    //  /* representation of the graph that we want to test */
+    //  int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+    //                       /*1*/    {inf, 0},
+    //                      /*2*/     { 3, inf}};
+
+    //  int tp[N] = {1,2}; // UPDATE DMAX IF YOU UPDATE THIS
+
+      int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+                        /*1*/    {inf,   1,   inf},
+                        /*2*/    {inf  , inf,   2},
+                        /*3*/    { 0, inf, inf}};
+    int tp[N] = {1,1,1};  
+
+//   int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/
+//                         /*1*/    {inf,   inf,   inf,   2},
+//                         /*2*/    {0  , inf,   inf,   inf},
+//                         /*3*/    {  inf, 0, inf, inf},
+//                         /*4*/    {inf,   0,   0, inf}};
+//     int tp[N] = {0,7,3,3};  
+//   int init_graph[N][N] ={      /*1*/ /*2*/ /*3*/ /*4*/ /*5*/
+//                         /*1*/    {inf,   1, inf, inf, inf},
+//                         /*2*/    {inf, inf,   2,   1, inf},
+//                         /*3*/    {  1, inf, inf, inf, inf},
+//                         /*4*/    {inf,   1,   0, inf,   1},
+//                         /*5*/    {inf, inf,   0, inf, inf}
+//                         };
+  //  int tp[N] = {0,1,3,3};   // UPDATE DMAX IF YOU UPDATE THIS
+
+    int c = 10; // wanted retiming value
+
     
-    // int tp[N] = {1,1,2,2};
+
     retime(init_graph, c, tp);    
     return 0;
 }
@@ -212,8 +239,11 @@ if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE 
         for (int u = 0; u < N; u++){
             if (d[u][v] > c) {
                 inq[u][v] = w[u][v] - 1;
+             //     inq[v][u] = w[u][v] -1;
+
             } else {
-                inq[u][v] = w[u][v];
+               inq[u][v] = w[u][v];
+             //     inq[v][u] = w[u][v];
             }
         }
     }
@@ -242,7 +272,7 @@ if (Gp.sp()) { /* NOT SURE IF THIS IS NECESSARY */ /*REMOVE THIS CHECK IF THERE 
             cur += INQ.a[u][v];
         }
 
-        if (cur < smallest) {
+        if (cur <= smallest) {
             smallest = cur;
             column_ptr = v;
         }
