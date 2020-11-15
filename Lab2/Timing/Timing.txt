@@ -1,0 +1,107 @@
+***************************************
+Report : analysis_coverage
+Design : MAC
+Version: O-2018.06
+Date   : Fri Nov 13 12:19:12 2020
+****************************************
+
+Type of Check         Total              Met         Violated         Untested
+--------------------------------------------------------------------------------
+setup                   138       138 (100%)         0 (  0%)         0 (  0%)
+hold                    138       138 (100%)         0 (  0%)         0 (  0%)
+recovery                296         0 (  0%)         0 (  0%)       296 (100%)
+removal                 148         0 (  0%)         0 (  0%)       148 (100%)
+min_pulse_width         424       276 ( 65%)         0 (  0%)       148 ( 35%)
+--------------------------------------------------------------------------------
+All Checks             1144       552 ( 48%)         0 (  0%)       592 ( 52%)
+
+****************************************
+Report : timing
+	-path_type full
+	-delay_type min
+	-max_paths 1
+	-sort_by slack
+Design : MAC
+Version: O-2018.06
+Date   : Fri Nov 13 12:19:12 2020
+****************************************
+
+
+  Startpoint: fifo/data_reg[0][0]
+               (rising edge-triggered flip-flop clocked by Wclk)
+  Endpoint: fifo/data_reg[0][0]
+               (rising edge-triggered flip-flop clocked by Wclk)
+  Path Group: Wclk
+  Path Type: min
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock Wclk (rise edge)                                  0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  fifo/data_reg[0][0]/CLK (DFFPOSX1)                      0.00       0.00 r
+  fifo/data_reg[0][0]/Q (DFFPOSX1)                        0.07       0.07 r
+  U514/Y (INVX1)                                          0.02       0.08 f
+  fifo/U248/Y (OAI21X1)                                   0.04       0.12 r
+  fifo/data_reg[0][0]/D (DFFPOSX1)                        0.00       0.12 r
+  data arrival time                                                  0.12
+
+  clock Wclk (rise edge)                                  0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  clock reconvergence pessimism                           0.00       0.00
+  fifo/data_reg[0][0]/CLK (DFFPOSX1)                                 0.00 r
+  library hold time                                      -0.01      -0.01
+  data required time                                                -0.01
+  ------------------------------------------------------------------------------
+  data required time                                                -0.01
+  data arrival time                                                 -0.12
+  ------------------------------------------------------------------------------
+  slack (MET)                                                        0.13
+
+
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : MAC
+Version: O-2018.06
+Date   : Fri Nov 13 12:19:12 2020
+****************************************
+
+
+  Startpoint: fifo/rd_ptr_reg[1]
+               (rising edge-triggered flip-flop clocked by Rclk)
+  Endpoint: fifo/rd_ptr_wff_reg[1]
+               (rising edge-triggered flip-flop clocked by Wclk)
+  Path Group: Wclk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock Rclk (rise edge)                              66667.00   66667.00
+  clock network delay (ideal)                             0.00   66667.00
+  fifo/rd_ptr_reg[1]/CLK (DFFSR)                          0.00   66667.00 r
+  fifo/rd_ptr_reg[1]/Q (DFFSR)                            0.11   66667.11 f
+  U417/Y (BUFX2)                                          0.04   66667.16 f
+  U467/Y (INVX1)                                          0.03   66667.18 r
+  U250/Y (AND2X1)                                         0.19   66667.37 r
+  U251/Y (INVX1)                                          0.08   66667.46 f
+  U20/Y (AND2X1)                                          0.03   66667.49 f
+  U339/Y (INVX1)                                          0.02   66667.51 r
+  fifo/rd_ptr_wff_reg[1]/D (DFFSR)                        0.00   66667.51 r
+  data arrival time                                              66667.51
+
+  clock Wclk (rise edge)                              83333.00   83333.00
+  clock network delay (ideal)                             0.00   83333.00
+  clock reconvergence pessimism                           0.00   83333.00
+  fifo/rd_ptr_wff_reg[1]/CLK (DFFSR)                             83333.00 r
+  library setup time                                     -0.07   83332.93
+  data required time                                             83332.93
+  ------------------------------------------------------------------------------
+  data required time                                             83332.93
+  data arrival time                                              -66667.51
+  ------------------------------------------------------------------------------
+  slack (MET)                                                    16665.42
+
+
