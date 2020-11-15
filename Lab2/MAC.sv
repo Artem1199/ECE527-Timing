@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Artem Kulakevich
 // 
 // Create Date: 11/07/2020 02:10:30 AM
 // Design Name: 

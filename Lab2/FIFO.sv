@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Artem Kulakevich
 // 
 // Create Date: 11/07/2020 02:31:04 AM
 // Design Name: 
@@ -26,8 +26,6 @@ module FIFO(
     input           wrst_n,
     input           rrst_n,
     input   [ 7:0]  Mul_i,
-    input           ren,
-    input           wen,
     output  [ 7:0]  Acc,
     output          Rempty_o,
     output          Wfull_o
@@ -38,6 +36,7 @@ module FIFO(
     logic [3:0] rd_ptr_gray, wr_ptr_gray;
     logic [7:0] data [7:0];
     logic Rempty, Wfull;
+    logic reset;
     
     // Increment the right pointer if we want to right, and not full
     always_ff @(posedge Wclk or negedge reset) begin

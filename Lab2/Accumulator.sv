@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Artem Kulakevich
 // 
 // Create Date: 11/07/2020 02:31:04 AM
 // Design Name: 
@@ -32,7 +32,7 @@ module Accumulator(
     reg  [ 1:0] counter;
     wire [ 7:0] cla1_dat, cla2_dat;
     wire [11:0] cla3_dat;
-    wire        cla1_cout, cla2_cout;
+    wire        cla1_cout, cla2_cout, cla3_cout;
     always_ff @(posedge Rclk or posedge reset) begin
         
         if (reset) begin
